@@ -21,7 +21,7 @@ def get_db():
 
 @app.post('/blog', status_code=status.HTTP_201_CREATED)
 def create(request: schemas.Blog, db: Session = Depends(get_db)):
-    new_blog = models.Blog(title=request.title, body=request.body)
+    new_blog = models.Blog(title=request.title, body=request.body, bookmarkid =request.bookmarkid)
     db.add(new_blog)
     db.commit()
     db.refresh(new_blog)
@@ -46,7 +46,7 @@ def destry(id, db: Session = Depends(get_db)):
     db.commit()
     return 'done'
 
-@app.put('/blog/{id}', status_code=status.HTTP_202_ACCEPTED)
+@app.put('/blog/{id}', status_code=200, response_model=schemas.ShowBlog)
 def update(id,request: schemas.Blog, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
     if not blog.first():
@@ -65,7 +65,7 @@ def all(db: Session = Depends(get_db)):
     return blogs
 
 
-@app.get('/blog/{id}', status_code=200)
+@app.get('/blog/{id}', status_code=200, response_model = schemas.ShowBlog)
 def show(id, response: Response, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
