@@ -46,7 +46,7 @@ def destry(id, db: Session = Depends(get_db)):
     db.commit()
     return 'done'
 
-@app.put('/blog/{id}', status_code=200, response_model=schemas.ShowBlog)
+@app.put('/blog/{id}', status_code=200)
 def update(id,request: schemas.Blog, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
     if not blog.first():
